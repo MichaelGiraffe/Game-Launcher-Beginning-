@@ -116,12 +116,12 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
         downerLabel.setStyleSheet("background-color: #ffffff")
         downerLabel.setGeometry(0, 933, 2500, 85)
 
+
+        # усвоить еще раз
         # кнопка аккаунта
         button1 = QPushButton("Аккаунт стим\n(в разработке)", widget)
         (button1.setStyleSheet(button_get(self)))
         button1.setGeometry(0, 0, 180, 80)
-        button1.addAction("Управление профилем")
-        button1.addAction("Выход")
         # контекстное меню для кнопки аккаунта
         account_menu = QMenu(self)
         account_menu.setStyleSheet(qmenu_set(self))  # Применяем стиль к QMenu
@@ -130,6 +130,8 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
         account_menu.addAction("Выход")
         # Привязываем меню к кнопке
         button1.setMenu(account_menu)
+        # усвоить еще раз
+
 
         # кнопка "игра/играть -думайте сами"
         self.play_button = QPushButton("игра", widget)
@@ -173,8 +175,6 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
         self.play_button.clicked.connect(lambda: subprocess.Popen(r"D:\ProgramsNecesary\Steam\steam.exe"))
 
     # основные поля
-
-    # Fixed?
     # функция обзора файлов ()
     def BrowseFunc(self):  # указать ссылку (пример button)
         try:
@@ -183,7 +183,6 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
                 self.Hbutton.setText(file_path)
         except:
             raise Exception("все таки поломалась")
-    # Fixed?
 
 
 if __name__ == "__main__":
