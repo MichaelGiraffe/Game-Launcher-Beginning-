@@ -1,12 +1,11 @@
+import os,sys
 import subprocess
 import sys
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QScrollArea, QMenu,
                                QFileDialog)
 from PySide6 import QtWidgets
-from PySide6.QtGui import QIcon
-from AppOpener import open
-from subprocess import Popen
+from PySide6.QtGui import QIcon, QPixmap,QImage
 
 
 def button_get(self) -> str:  # формат кнопок в проекте (сеттер дизайна кнопки CSS)
@@ -62,7 +61,6 @@ def label_get(self) -> str:  # формат кнопок в проекте (се
         """)
 
 
-# class MainWindow(object):  # наследуем QMainWindow
 class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
     def __init__(self):
         super().__init__()
@@ -76,6 +74,18 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
 
         self.setWindowIcon(QIcon("y6tpXGzUwTY.jpg"))  # Устанавливаем иконку
         self.setStyleSheet("background-color: rgba(255, 231, 194, 1);")
+
+    #функция для обоев(его resize)
+    def resizeEvent(self, event):
+        if hasattr(self, 'background'):
+            self.background.setGeometry(0, 0, self.width(), self.height())
+            self.background.setPixmap(
+                QPixmap("cat.png").scaled(
+                    self.size(), Qt.IgnoreAspectRatio, Qt.SmoothTransformation
+                )
+            )
+        super().resizeEvent(event)
+
 
     # дизайн приложения в стиле CSS объектов
     def add_button_and_rectangle(self):
@@ -94,6 +104,14 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
         button.move(100, 50)
 
         # Кастомный дизайн лаунчера из виджетов
+
+        #вставка картинки
+        self.background = QLabel(widget)
+        self.background.setGeometry(0, 0, self.width(), self.height())
+        self.background.setPixmap(QPixmap("cat.png").scaled(self.size(),Qt.IgnoreAspectRatio, Qt.SmoothTransformation))
+
+        self.background.lower()
+        # вставка картинки
 
         # верхний label
         topLabel = QLabel(widget)
@@ -116,7 +134,6 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
         downerLabel.setStyleSheet("background-color: #ffffff")
         downerLabel.setGeometry(0, 933, 2500, 85)
 
-
         # усвоить еще раз
         # кнопка аккаунта
         button1 = QPushButton("Аккаунт стим\n(в разработке)", widget)
@@ -132,11 +149,15 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
         button1.setMenu(account_menu)
         # усвоить еще раз
 
-
         # кнопка "игра/играть -думайте сами"
         self.play_button = QPushButton("игра", widget)
         (self.play_button.setStyleSheet(button_get(self)))
         self.play_button.setGeometry(180, 0, 180, 80)
+
+        # быстрая большая кнопка play
+        self.mainplay_button = QPushButton("играть", widget)
+        (self.mainplay_button.setStyleSheet(button_get(self)))
+        self.mainplay_button.setGeometry(400, 800, 220, 90)
 
         # pushbutton "версия игры(лаунчера)+открывает значится хрень со списками уровней (потом изображу)"
         version_button = QPushButton("version: alfa 0.01", widget)
@@ -155,12 +176,13 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
 
         # отсылка к функционалу
         self.play_func()
+        self.mainplay_func()
 
-        # демка выбора файла (сделать функционал к другой кнопке)
+        # демка выбора файла
         self.Hbutton = QPushButton("what", widget)
         self.Hbutton.clicked.connect(self.BrowseFunc)
         button.setStyleSheet(button_get(self))
-        self.Hbutton.setGeometry(600, 600, 500, 500)
+        self.Hbutton.setGeometry(600, 600, 200, 200)
 
         # Добавляем в макет
         # layout.addWidget(button)
@@ -174,6 +196,9 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
     def play_func(self):
         self.play_button.clicked.connect(lambda: subprocess.Popen(r"D:\ProgramsNecesary\Steam\steam.exe"))
 
+    def mainplay_func(self):
+        self.mainplay_button.clicked.connect(lambda: subprocess.Popen(r"D:\ProgramsNecesary\Steam\steam.exe"))
+
     # основные поля
     # функция обзора файлов ()
     def BrowseFunc(self):  # указать ссылку (пример button)
@@ -181,7 +206,7 @@ class UI_MainWindow(QMainWindow):  # наследуем QMainWindow
             file_path = QFileDialog.getExistingDirectory(self, "Выберите местоположение ресурсов игры")
             if file_path:
                 self.Hbutton.setText(file_path)
-        except:
+        except Exception as e:
             raise Exception("все таки поломалась")
 
 
